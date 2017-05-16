@@ -1,5 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='tickets'
+    name='tickets',
+    packages=['tickets'],
+    include_package_data=True
     )
