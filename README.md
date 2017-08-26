@@ -2,3 +2,7 @@
 
 # tickets
 Reboot of a Ticketing System
+
+## Development
+
+Simply call `tox` from the command line.
