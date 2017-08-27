@@ -6,3 +6,5 @@ Reboot of a Ticketing System
 ## Development
 
 Simply call `tox` from the command line.
+
+Call `FLASK_APP=tickets/tickets.py flask run` to run the development server.
