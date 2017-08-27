@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container">
+    <h1>Deine METZ Tickets</h1>
+    {% for ticket in tickets %}
+    <div class="row">
+        <p>Ticket id {{ ticket.id  }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
