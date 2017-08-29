@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 import os
 import stripe
 import uuid
@@ -18,6 +18,11 @@ class Ticket(object):
         self.id = ticket_id
         self.__email = email
 
+class Purchase(object):
+    def __init__(self, purchase_id, tickets):
+        self.id = purchase_id
+        self.tickets = tickets
+
 class Event(object):
     def __init__(self, event_id):
         self.price = 2500
@@ -29,6 +34,7 @@ class Event(object):
 
 
 events = {'1': Event(1)}
+purchases = {}
 
 @app.route("/")
 def index():
@@ -56,12 +62,19 @@ def charge():
 
     # Create tickets
     tickets = [Ticket(event_id, uuid.uuid4(), email) for _ in range(ticket_count)]
+    purchase = Purchase(1, tickets)
+    purchases['1'] = purchase
     for ticket in tickets:
         event.add_ticket(ticket)
 
     # TODO: create purchase id
     print(events)
-    return render_template('ticket.html', tickets=tickets)
+    return redirect(url_for('purchase', purchase_id=purchase.id), code=302)
+
+@app.route("/purchase/<purchase_id>")
+def purchase(purchase_id):
+    purchase = purchases[purchase_id]
+    return render_template('purchase.html', purchase=purchase)
 
 if __name__ == "__main__":
     app.run()
