@@ -70,10 +70,12 @@ def charge():
         event.add_ticket(ticket)
 
     # Charge money
+    description = "Your purchase of {} tickets for METZ".format(ticket_count)
     stripe.Charge.create(
         amount=amount,
         currency='eur',
         source=token,
+        description=description,
         metadata={
             'purchase_id': purchase.id
         }
