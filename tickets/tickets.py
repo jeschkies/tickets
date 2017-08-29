@@ -14,17 +14,17 @@ stripe.api_key = stripe_keys['secret_key']
 
 
 class Ticket(object):
-    def __init__(self, event_id, ticket_id, email):
+    def __init__(self, event_id, ticket_id):
         self.__event_id = event_id
         self.id = ticket_id
-        self.__email = email
 
 
 class Purchase(object):
-    def __init__(self, purchase_id, event_id, tickets):
+    def __init__(self, purchase_id, event_id, tickets, email):
         self.id = purchase_id
         self.tickets = tickets
         self.event_id = event_id
+        self.email = email
 
 
 class Event(object):
@@ -39,6 +39,7 @@ class Event(object):
 
 events = {'1': Event(1)}
 purchases = {}
+tickets = {}
 
 
 @app.route("/")
@@ -61,12 +62,11 @@ def charge():
     # TODO: Make charge and ticket creation and atomic operation.
 
     # Create tickets
-    tickets = [Ticket(event_id, uuid.uuid4(), email)
-               for _
-               in range(ticket_count)]
-    purchase = Purchase(1, tickets)
+    new_tickets = [Ticket(event_id, uuid.uuid4()) for _ in range(ticket_count)]
+    purchase = Purchase(1, event_id, new_tickets, email)
     purchases['1'] = purchase
-    for ticket in tickets:
+    for ticket in new_tickets:
+        tickets[ticket.id] = ticket
         event.add_ticket(ticket)
 
     # Charge money
@@ -87,6 +87,12 @@ def charge():
 def purchase(purchase_id):
     purchase = purchases[purchase_id]
     return render_template('purchase.html', purchase=purchase)
+
+
+@app.route("/ticket/<ticket_id>")
+def ticket(ticket_id):
+    ticket = tickets[uuid.UUID(ticket_id)]
+    return render_template('ticket.html', ticket=ticket)
 
 
 if __name__ == "__main__":
