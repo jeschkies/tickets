@@ -21,9 +21,10 @@ class Ticket(object):
 
 
 class Purchase(object):
-    def __init__(self, purchase_id, tickets):
+    def __init__(self, purchase_id, event_id, tickets):
         self.id = purchase_id
         self.tickets = tickets
+        self.event_id = event_id
 
 
 class Event(object):
@@ -58,12 +59,6 @@ def charge():
     token = request.form['stripeToken']
 
     # TODO: Make charge and ticket creation and atomic operation.
-    # Charge money
-    stripe.Charge.create(
-        amount=amount,
-        currency='eur',
-        source=token
-    )
 
     # Create tickets
     tickets = [Ticket(event_id, uuid.uuid4(), email)
@@ -73,6 +68,16 @@ def charge():
     purchases['1'] = purchase
     for ticket in tickets:
         event.add_ticket(ticket)
+
+    # Charge money
+    stripe.Charge.create(
+        amount=amount,
+        currency='eur',
+        source=token,
+        metadata={
+            'purchase_id': purchase.id
+        }
+    )
 
     # TODO: create purchase id
     return redirect(url_for('purchase', purchase_id=purchase.id), code=302)
