@@ -10,7 +10,7 @@ Simply call `tox` from the command line to lint and test everything.
 For active development you should setup a virtual environment:
 
 ```bash
-virtualenv devenv
+virtualenv devenv -p python3.6
 source devenv/bin/activate
 pip install -r requirements.txt
 pip install -e .
