@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template, request, url_for
+import humanhash
 from tickets import models
 from tickets.models import Event, Purchase, Ticket
 import os
@@ -12,6 +13,11 @@ stripe_keys = {
 }
 
 stripe.api_key = stripe_keys['secret_key']
+
+@app.template_filter('humanize')
+def humanize_filter(digest):
+    return humanhash.humanize(str(digest), words=5)
+
 
 
 @app.before_request

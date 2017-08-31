@@ -1,5 +1,6 @@
 Flask==0.12
 flake8>=3.4.1
+-e git://github.com/nazavode/humanhash.git#egg=humanhash
 peewee>=2.10.1
 pytest>=3.0.0
 stripe>=1.62.0
