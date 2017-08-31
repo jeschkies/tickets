@@ -25,7 +25,7 @@ class Event(SqliteModel):
 class Purchase(SqliteModel):
     email = TextField()
     event = ForeignKeyField(Event, related_name='purchases')
-    secret = CharField(default=secrets.token_hex)
+    secret = CharField(default=secrets.token_urlsafe)
 
     def create_ticket(self):
         return Ticket.create(event=self.event, purchase=self)
@@ -38,4 +38,4 @@ class Purchase(SqliteModel):
 class Ticket(SqliteModel):
     event = ForeignKeyField(Event, related_name='messages')
     purchase = ForeignKeyField(Purchase, related_name='tickets')
-    secret = CharField(default=secrets.token_hex)
+    secret = CharField(default=secrets.token_urlsafe)

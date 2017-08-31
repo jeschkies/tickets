@@ -14,10 +14,10 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
+
 @app.template_filter('humanize')
 def humanize_filter(digest):
     return humanhash.humanize(str(digest), words=5)
-
 
 
 @app.before_request
@@ -69,20 +69,26 @@ def charge():
             }
         )
 
-    return redirect(url_for('purchase', purchase_id=purchase.id), code=302)
+    redirect_url = url_for('purchase', purchase_id=purchase.id,
+                           secret=purchase.secret)
+    return redirect(redirect_url, code=302)
 
 
-# TODO: use secret parameter as well
 @app.route("/purchase/<purchase_id>")
 def purchase(purchase_id):
-    purchase = Purchase.select().where(Purchase.id == purchase_id).get()
+    # TODO: Handle no secret or unknown purchase
+    secret = request.args.get('secret')
+    purchase = Purchase.select().where(
+            (Purchase.id == purchase_id) & (Purchase.secret == secret)).get()
     return render_template('purchase.html', purchase=purchase)
 
 
-# TODO: use secret parameter as well
 @app.route("/ticket/<ticket_id>")
 def ticket(ticket_id):
-    ticket = Ticket.select().where(Ticket.id == ticket_id).get()
+    # TODO: Handle no secret or unknown ticket
+    secret = request.args.get('secret')
+    ticket = Ticket.select().where(
+            (Ticket.id == ticket_id) & (Ticket.secret == secret)).get()
     return render_template('ticket.html', ticket=ticket)
 
 
