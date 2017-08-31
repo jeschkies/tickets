@@ -1,14 +1,16 @@
+from peewee import SqliteDatabase
 import pytest
-from tickets import models
+from tickets import config, models
+from tickets.app import app, db
 from tickets.models import Event, Purchase, Ticket
 
 
 @pytest.fixture
 def database():
-    models.db.connect()
-    models.db.create_tables([Event, Purchase, Ticket])
-    yield models.db
-    models.db.close()
+    db.db.connect()
+    db.db.create_tables([Event, Purchase, Ticket])
+    yield db
+    db.db.close()
 
 
 def test_event(database):

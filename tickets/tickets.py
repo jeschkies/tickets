@@ -1,11 +1,10 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for
 import humanhash
 from tickets import models
+from tickets.app import app, db
 from tickets.models import Event, Purchase, Ticket
 import os
 import stripe
-
-app = Flask(__name__)
 
 stripe_keys = {
   'secret_key': os.environ.get('STRIPE_SECRET_KEY', None),
@@ -22,15 +21,15 @@ def humanize_filter(digest):
 
 @app.before_request
 def before_request():
-    models.db.connect()
+    db.db.connect()
     # TODO: Do once on startup
-    models.db.create_tables([Event, Purchase, Ticket], safe=True)
+    db.db.create_tables([Event, Purchase, Ticket], safe=True)
     Event.create(price=2500, description='METZ at Logo')
 
 
 @app.after_request
 def after_request(response):
-    models.db.close()
+    db.db.close()
     return response
 
 
@@ -51,7 +50,7 @@ def charge():
 
     token = request.form['stripeToken']
 
-    with models.db.atomic():
+    with db.db.atomic():
         # Create tickets
         purchase = event.create_purchase(email)
         purchase.create_tickets(ticket_count)

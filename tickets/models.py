@@ -1,17 +1,9 @@
-from peewee import (CharField, ForeignKeyField, IntegerField, Model,
-                    SqliteDatabase, TextField)
+from peewee import (CharField, ForeignKeyField, IntegerField, Model, TextField)
 import secrets
-
-db = SqliteDatabase(':memory:')
-# db = SqliteDatabase('ticketfarm.db')
+from tickets.app import app, db
 
 
-class SqliteModel(Model):
-    class Meta:
-        database = db
-
-
-class Event(SqliteModel):
+class Event(db.Model):
     price = IntegerField()
     description = TextField()
 
@@ -22,10 +14,10 @@ class Event(SqliteModel):
         return Purchase.create(event=self, email=email)
 
 
-class Purchase(SqliteModel):
+class Purchase(db.Model):
     email = TextField()
     event = ForeignKeyField(Event, related_name='purchases')
-    secret = CharField(default=secrets.token_urlsafe)
+    secret = CharField(default=secrets.token_hex)
 
     def create_ticket(self):
         return Ticket.create(event=self.event, purchase=self)
@@ -35,7 +27,7 @@ class Purchase(SqliteModel):
                 for _ in range(count)]
 
 
-class Ticket(SqliteModel):
+class Ticket(db.Model):
     event = ForeignKeyField(Event, related_name='messages')
     purchase = ForeignKeyField(Purchase, related_name='tickets')
-    secret = CharField(default=secrets.token_urlsafe)
+    secret = CharField(default=secrets.token_hex)
