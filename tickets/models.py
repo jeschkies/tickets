@@ -1,6 +1,6 @@
-from peewee import (CharField, ForeignKeyField, IntegerField, Model, TextField)
+from peewee import (CharField, ForeignKeyField, IntegerField, TextField)
 import secrets
-from tickets.app import app, db
+from tickets.app import db
 
 
 class Event(db.Model):

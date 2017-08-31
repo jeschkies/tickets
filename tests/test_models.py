@@ -1,7 +1,5 @@
-from peewee import SqliteDatabase
 import pytest
-from tickets import config, models
-from tickets.app import app, db
+from tickets.app import db
 from tickets.models import Event, Purchase, Ticket
 
 

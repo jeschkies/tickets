@@ -1,6 +1,5 @@
 from flask import redirect, render_template, request, url_for
 import humanhash
-from tickets import models
 from tickets.app import app, db
 from tickets.models import Event, Purchase, Ticket
 import os

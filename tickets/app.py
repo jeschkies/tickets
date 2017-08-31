@@ -1,10 +1,12 @@
 from flask import Flask
+import os
 from peewee import Model, SqliteDatabase
 from tickets import config
 
 app = Flask(__name__)
 app.config.from_object(config)
-app.config.from_envvar('TICKETFARM_SETTINGS')
+app.config.from_json(os.environ['TICKETFARM_SETTINGS'])
+
 
 class Database(object):
     def __init__(self, app):
@@ -17,5 +19,6 @@ class Database(object):
                 database = self.db
 
         return BaseModel
+
 
 db = Database(app)
