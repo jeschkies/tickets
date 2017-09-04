@@ -6,8 +6,8 @@ import os
 import stripe
 
 stripe_keys = {
-  'secret_key': os.environ.get('STRIPE_SECRET_KEY', None),
-  'publishable_key': os.environ.get('STRIPE_PUBLISHABLE_KEY', None)
+    'secret_key': os.environ.get('STRIPE_SECRET_KEY', None),
+    'publishable_key': os.environ.get('STRIPE_PUBLISHABLE_KEY', None)
 }
 
 stripe.api_key = stripe_keys['secret_key']
@@ -34,8 +34,8 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    return render_template('index.html', key=stripe_keys['publishable_key'],
-                           amount=2500)
+    return render_template(
+        'index.html', key=stripe_keys['publishable_key'], amount=2500)
 
 
 @app.route("/charge", methods=['POST'])
@@ -56,19 +56,16 @@ def charge():
 
         # Charge money
         description = "Your purchase of {} tickets for METZ".format(
-                ticket_count)
+            ticket_count)
         stripe.Charge.create(
             amount=amount,
             currency='eur',
             source=token,
             description=description,
-            metadata={
-                'purchase_id': purchase.id
-            }
-        )
+            metadata={'purchase_id': purchase.id})
 
-    redirect_url = url_for('purchase', purchase_id=purchase.id,
-                           secret=purchase.secret)
+    redirect_url = url_for(
+        'purchase', purchase_id=purchase.id, secret=purchase.secret)
     return redirect(redirect_url, code=302)
 
 
@@ -76,8 +73,8 @@ def charge():
 def purchase(purchase_id):
     # TODO: Handle no secret or unknown purchase
     secret = request.args.get('secret')
-    purchase = Purchase.select().where(
-            (Purchase.id == purchase_id) & (Purchase.secret == secret)).get()
+    purchase = Purchase.select().where((Purchase.id == purchase_id) &
+                                       (Purchase.secret == secret)).get()
     return render_template('purchase.html', purchase=purchase)
 
 
@@ -85,8 +82,8 @@ def purchase(purchase_id):
 def ticket(ticket_id):
     # TODO: Handle no secret or unknown ticket
     secret = request.args.get('secret')
-    ticket = Ticket.select().where(
-            (Ticket.id == ticket_id) & (Ticket.secret == secret)).get()
+    ticket = Ticket.select().where((Ticket.id == ticket_id) &
+                                   (Ticket.secret == secret)).get()
     return render_template('ticket.html', ticket=ticket)
 
 

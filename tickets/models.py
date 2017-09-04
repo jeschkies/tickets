@@ -23,8 +23,10 @@ class Purchase(db.Model):
         return Ticket.create(event=self.event, purchase=self)
 
     def create_tickets(self, count):
-        return [Ticket.create(event=self.event, purchase=self)
-                for _ in range(count)]
+        return [
+            Ticket.create(event=self.event, purchase=self)
+            for _ in range(count)
+        ]
 
 
 class Ticket(db.Model):

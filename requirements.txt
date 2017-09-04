@@ -4,3 +4,4 @@ flake8>=3.4.1
 peewee>=2.10.1
 pytest>=3.0.0
 stripe>=1.62.0
+yapf==0.17.0
