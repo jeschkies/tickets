@@ -1,11 +1,11 @@
 from flask import Flask
 import os
 from peewee import Model, SqliteDatabase
-from tickets import config
 
 app = Flask(__name__)
-app.config.from_object(config)
-app.config.from_json(os.environ['TICKETFARM_SETTINGS'])
+app.config.from_object('tickets.config.default')
+app.config.from_object(
+        os.getenv('TICKETFARM_SETTINGS', 'tickets.config.default'))
 
 
 class Database(object):
