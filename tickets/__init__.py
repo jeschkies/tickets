@@ -1,1 +1,1 @@
-from .tickets import app # NOQA
+from .tickets import app  # NOQA

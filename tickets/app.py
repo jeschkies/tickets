@@ -5,7 +5,7 @@ from peewee import Model, SqliteDatabase
 app = Flask(__name__)
 app.config.from_object('tickets.config.default')
 app.config.from_object(
-        os.getenv('TICKETFARM_SETTINGS', 'tickets.config.default'))
+    os.getenv('TICKETFARM_SETTINGS', 'tickets.config.default'))
 
 
 class Database(object):
