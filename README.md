@@ -16,6 +16,14 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-You can then run the tests with `pytest`.
+You can then run the tests with `TICKETFARM_SETTINGS='tickets.config.test' pytest`.
 
-The development server is started with `STRIPE_PUBLISHABLE_KEY='...' STRIPE_SECRET_KEY='...' python tickets/tickets.py`.
+The development server is started with
+
+```bash
+FLASK_APP=./tickets/main.py \
+STRIPE_PUBLISHABLE_KEY='...' \
+STRIPE_SECRET_KEY='...' \
+TICKETFARM_SETTINGS='tickets.config.dev' \
+flask run
+```

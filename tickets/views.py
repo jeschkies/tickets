@@ -1,16 +1,8 @@
 from flask import redirect, render_template, request, url_for
 import humanhash
-from tickets.app import app, db
-from tickets.models import Event, Purchase, Ticket
-import os
 import stripe
-
-stripe_keys = {
-    'secret_key': os.environ.get('STRIPE_SECRET_KEY', None),
-    'publishable_key': os.environ.get('STRIPE_PUBLISHABLE_KEY', None)
-}
-
-stripe.api_key = stripe_keys['secret_key']
+from tickets.app import app, db, stripe_keys
+from tickets.models import Event, Purchase, Ticket
 
 
 @app.template_filter('humanize')
@@ -85,7 +77,3 @@ def ticket(ticket_id):
     ticket = Ticket.select().where((Ticket.id == ticket_id) &
                                    (Ticket.secret == secret)).get()
     return render_template('ticket.html', ticket=ticket)
-
-
-if __name__ == "__main__":
-    app.run()
