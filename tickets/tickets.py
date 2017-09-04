@@ -1,9 +1,9 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for
+import humanhash
+from tickets.app import app, db
+from tickets.models import Event, Purchase, Ticket
 import os
 import stripe
-import uuid
-
-app = Flask(__name__)
 
 stripe_keys = {
   'secret_key': os.environ.get('STRIPE_SECRET_KEY', None),
@@ -13,33 +13,23 @@ stripe_keys = {
 stripe.api_key = stripe_keys['secret_key']
 
 
-class Ticket(object):
-    def __init__(self, event_id, ticket_id):
-        self.__event_id = event_id
-        self.id = ticket_id
+@app.template_filter('humanize')
+def humanize_filter(digest):
+    return humanhash.humanize(str(digest), words=5)
 
 
-class Purchase(object):
-    def __init__(self, purchase_id, event_id, tickets, email):
-        self.id = purchase_id
-        self.tickets = tickets
-        self.event_id = event_id
-        self.email = email
+@app.before_request
+def before_request():
+    db.db.connect()
+    # TODO: Do once on startup
+    db.db.create_tables([Event, Purchase, Ticket], safe=True)
+    Event.create(price=2500, description='METZ at Logo')
 
 
-class Event(object):
-    def __init__(self, event_id):
-        self.price = 2500
-        self.__id = event_id
-        self.__tickets = list()
-
-    def add_ticket(self, ticket):
-        self.__tickets.append(ticket)
-
-
-events = {'1': Event(1)}
-purchases = {}
-tickets = {}
+@app.after_request
+def after_request(response):
+    db.db.close()
+    return response
 
 
 @app.route("/")
@@ -53,47 +43,50 @@ def charge():
     email = request.form['stripeEmail']
     ticket_count = int(request.form['ticket_count'])
     event_id = request.form['event_id']
-    event = events[event_id]
+    event = Event.select().where(Event.id == event_id).get()
     ticket_price = event.price
     amount = ticket_count * ticket_price
 
     token = request.form['stripeToken']
 
-    # TODO: Make charge and ticket creation and atomic operation.
+    with db.db.atomic():
+        # Create tickets
+        purchase = event.create_purchase(email)
+        purchase.create_tickets(ticket_count)
 
-    # Create tickets
-    new_tickets = [Ticket(event_id, uuid.uuid4()) for _ in range(ticket_count)]
-    purchase = Purchase(1, event_id, new_tickets, email)
-    purchases['1'] = purchase
-    for ticket in new_tickets:
-        tickets[ticket.id] = ticket
-        event.add_ticket(ticket)
+        # Charge money
+        description = "Your purchase of {} tickets for METZ".format(
+                ticket_count)
+        stripe.Charge.create(
+            amount=amount,
+            currency='eur',
+            source=token,
+            description=description,
+            metadata={
+                'purchase_id': purchase.id
+            }
+        )
 
-    # Charge money
-    description = "Your purchase of {} tickets for METZ".format(ticket_count)
-    stripe.Charge.create(
-        amount=amount,
-        currency='eur',
-        source=token,
-        description=description,
-        metadata={
-            'purchase_id': purchase.id
-        }
-    )
-
-    # TODO: create purchase id
-    return redirect(url_for('purchase', purchase_id=purchase.id), code=302)
+    redirect_url = url_for('purchase', purchase_id=purchase.id,
+                           secret=purchase.secret)
+    return redirect(redirect_url, code=302)
 
 
 @app.route("/purchase/<purchase_id>")
 def purchase(purchase_id):
-    purchase = purchases[purchase_id]
+    # TODO: Handle no secret or unknown purchase
+    secret = request.args.get('secret')
+    purchase = Purchase.select().where(
+            (Purchase.id == purchase_id) & (Purchase.secret == secret)).get()
     return render_template('purchase.html', purchase=purchase)
 
 
 @app.route("/ticket/<ticket_id>")
 def ticket(ticket_id):
-    ticket = tickets[uuid.UUID(ticket_id)]
+    # TODO: Handle no secret or unknown ticket
+    secret = request.args.get('secret')
+    ticket = Ticket.select().where(
+            (Ticket.id == ticket_id) & (Ticket.secret == secret)).get()
     return render_template('ticket.html', ticket=ticket)
 
 
