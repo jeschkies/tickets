@@ -21,7 +21,9 @@
             </div>
         </div>
         <input type="hidden" name="event_id" value="{{ event.id }}">
-        <button id="charge_button" v-on:click.prevent="charge" class="button-primary">Kaufen</button>
+        <button id="charge_button" v-on:click.prevent="charge" class="button-primary">
+            Für {% raw %}{{ total_amount_readable }}{% endraw %} kaufen
+        </button>
     </form>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </div>

@@ -10,19 +10,30 @@ var stripe_handler = StripeCheckout.configure({
     }
 })
 
-var app = new Vue({
+var ticket_count_vm = new Vue({
   el: '#ticket_count',
   data: {
     number_tickets: ''
   }
 })
 
-var b_vm = new Vue({
+var charge_vm = new Vue({
   el: '#charge_button',
   data: {},
+  computed: {
+    total_amount: function() {
+        var price = 2500 * ticket_count_vm.number_tickets
+        return price
+    },
+    total_amount_readable: function() {
+        var price = this.total_amount
+        price /= 100
+        return price.toLocaleString("de-DE", {style:"currency", currency:"EUR"})
+    }
+  },
   methods: {
     charge: function(event) {
-        stripe_handler.open({amount: 2500 * app.number_tickets})
+        stripe_handler.open({amount: this.total_amount})
     }
   }
 })
