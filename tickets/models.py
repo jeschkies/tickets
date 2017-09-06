@@ -5,6 +5,7 @@ from tickets.app import db
 
 class Event(db.Model):
     price = IntegerField()
+    title = TextField()
     description = TextField()
 
     def add_ticket(self, ticket):

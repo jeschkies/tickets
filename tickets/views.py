@@ -15,7 +15,12 @@ def before_request():
     db.db.connect()
     # TODO: Do once on startup
     db.db.create_tables([Event, Purchase, Ticket], safe=True)
-    Event.create(price=2500, description='METZ at Logo')
+
+    title = "METZ in Hamburg"
+    description = ("Mi, 13.12.17, 21:00 Uhr\n"
+                   "Knust - Hamburg\n"
+                   "Neuer Kamp 30, 20357 HAMBURG\n")
+    Event.create(price=2500, title=title, description=description)
 
 
 @app.after_request
@@ -26,8 +31,12 @@ def after_request(response):
 
 @app.route("/")
 def index():
+    event = Event.select().where(Event.id == 1).get()
     return render_template(
-        'index.html', key=stripe_keys['publishable_key'], amount=2500)
+        'index.html',
+        key=stripe_keys['publishable_key'],
+        amount=2500,
+        event=event)
 
 
 @app.route("/charge", methods=['POST'])

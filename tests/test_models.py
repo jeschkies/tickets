@@ -12,15 +12,16 @@ def database():
 
 
 def test_event(database):
-    event = Event.create(price=2500, description='METZ at Logo')
+    event = Event.create(price=2500, title='METZ', description='at Logo')
     fetched_event = Event.select().where(Event.id == event.id).get()
 
     assert fetched_event.price == 2500
-    assert fetched_event.description == 'METZ at Logo'
+    assert fetched_event.title == 'METZ'
+    assert fetched_event.description == 'at Logo'
 
 
 def test_purchase(database):
-    event = Event.create(price=2500, description='METZ at Logo')
+    event = Event.create(price=2500, title='METZ', description='at Logo')
     purchase_1 = Purchase.create(email='karsten@ticketfarm.de', event=event)
     purchase_2 = event.create_purchase(email='karsten@ticketfarm.de')
 
@@ -36,7 +37,7 @@ def test_purchase(database):
 
 
 def test_ticket(database):
-    event = Event.create(price=2500, description='METZ at Logo')
+    event = Event.create(price=2500, title='METZ', description='at Logo')
     purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
     tickets = purchase.create_tickets(2)
     ticket_ids = sorted([t.id for t in tickets])
