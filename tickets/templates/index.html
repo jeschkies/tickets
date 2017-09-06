@@ -8,7 +8,8 @@
     <form action="/charge" method="POST">
         <div class="row">
             <div class="nine columns">
-              <select class="u-full-width" id="ticket_count" name="ticket_count">
+              <select class="u-full-width" id="ticket_count" name="ticket_count" v-model="number_tickets">
+                <option disabled value="">Anzahl der Tickets</option>
                 <option value="1">1 Ticket</option>
                 <option value="2">2 Tickets</option>
                 <option value="3">3 Tickets</option>
@@ -19,18 +20,9 @@
                 <p>à 25,00€</p>
             </div>
         </div>
-          <input type="hidden" name="event_id" value="1">
-          <script
-            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            data-key="{{ key }}"
-            data-amount="{{ amount }}"
-            data-name="Demo Site"
-            data-description="Widget"
-            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-            data-locale="auto"
-            data-zip-code="true"
-            data-currency="eur">
-          </script>
+        <input type="hidden" name="event_id" value="{{ event.id }}">
+        <button id="charge_button" v-on:click.prevent="charge" class="button-primary">Kaufen</button>
     </form>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </div>
 {% endblock %}

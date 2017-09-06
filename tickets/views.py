@@ -35,7 +35,7 @@ def index():
     return render_template(
         'index.html',
         key=stripe_keys['publishable_key'],
-        amount=2500,
+        amount=2500, # TODO: Set events amount
         event=event)
 
 
