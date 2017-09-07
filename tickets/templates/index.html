@@ -3,12 +3,16 @@
 <div class="container">
     <div class="row">
         <h1>{{ event.title }}</h1>
+        <p>{{ event.price | currency }}</p>
         <p>{{ event.description }}</p>
     <div/>
-    <form action="/charge" method="POST">
+     <form action="{{ url_for('charge') }}" method="POST" id="purchase_form">
+        <input type="hidden" name="event_id" v-model="event_id">
+        <input type="hidden" name="stripeEmail" v-model="email">
+        <input type="hidden" name="stripeToken" v-model="stripe_token">
         <div class="row">
             <div class="nine columns">
-              <select class="u-full-width" id="ticket_count" name="ticket_count" v-model="number_tickets">
+              <select class="u-full-width" name="ticket_count" v-model="number_tickets">
                 <option disabled value="">Anzahl der Tickets</option>
                 <option value="1">1 Ticket</option>
                 <option value="2">2 Tickets</option>
@@ -17,14 +21,22 @@
               </select>
             </div>
             <div class="three columns">
-                <p>à 25,00€</p>
+                <button v-on:click.prevent="charge" class="button-primary">
+                    Für {% raw %}{{ total_amount_readable }}{% endraw %} kaufen
+                </button>
             </div>
         </div>
-        <input type="hidden" name="event_id" value="{{ event.id }}">
-        <button id="charge_button" v-on:click.prevent="charge" class="button-primary">
-            Für {% raw %}{{ total_amount_readable }}{% endraw %} kaufen
-        </button>
     </form>
+    <script type="text/javascript">
+        var stripe_publishable_key = "{{ stripe_publishable_key }}";
+        var purchase_data = {
+            number_tickets: '',
+            event_id: "{{ event.id }}",
+            event_price: {{ event.price }},
+            email: '',
+            stripe_token: ''
+        }
+    </script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </div>
 {% endblock %}

@@ -1,28 +1,21 @@
 var stripe_handler = StripeCheckout.configure({
-    key: "pk_test_0sXroqacYK4vsFNDUOJV40Eq", // TODO: Do not hardcode
+    key: stripe_publishable_key,
     name: "Ticketfarm",
     image: "https://stripe.com/img/documentation/checkout/marketplace.png",
     locale: "auto",
     zipCode: true,
     currency: "eur",
     token: function(token) {
-        alert('Toke is ' + token)
+        purchase_form_vm.submit(token.id, token.email)
     }
 })
 
-var ticket_count_vm = new Vue({
-  el: '#ticket_count',
-  data: {
-    number_tickets: ''
-  }
-})
-
-var charge_vm = new Vue({
-  el: '#charge_button',
-  data: {},
+var purchase_form_vm = new Vue({
+  el: '#purchase_form',
+  data: purchase_data,
   computed: {
     total_amount: function() {
-        var price = 2500 * ticket_count_vm.number_tickets
+        var price = this.event_price * this.number_tickets
         return price
     },
     total_amount_readable: function() {
@@ -34,6 +27,14 @@ var charge_vm = new Vue({
   methods: {
     charge: function(event) {
         stripe_handler.open({amount: this.total_amount})
+    },
+    submit: function(token, email) {
+        this.stripe_token = token
+        this.email = email
+        // Submit form after DOM has been updated.
+        Vue.nextTick(function () {
+            purchase_form_vm.$el.submit()
+        })
     }
   }
 })

@@ -1,3 +1,4 @@
+Babel>=2.5
 Flask==0.12
 flake8>=3.4.1
 -egit+https://github.com/nazavode/humanhash.git#egg=humanhash
