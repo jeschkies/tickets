@@ -1,3 +1,4 @@
+from babel.numbers import format_currency
 from flask import redirect, render_template, request, url_for
 import humanhash
 import stripe
@@ -8,6 +9,11 @@ from tickets.models import Event, Purchase, Ticket
 @app.template_filter('humanize')
 def humanize_filter(digest):
     return humanhash.humanize(str(digest), words=5)
+
+
+@app.template_filter('currency')
+def currency_filter(cents):
+    return format_currency(cents / 100, 'EUR', locale='de_DE')
 
 
 @app.before_request
@@ -34,21 +40,20 @@ def index():
     event = Event.select().where(Event.id == 1).get()
     return render_template(
         'index.html',
-        key=stripe_keys['publishable_key'],
-        amount=2500,
+        stripe_publishable_key=stripe_keys['publishable_key'],
         event=event)
 
 
 @app.route("/charge", methods=['POST'])
 def charge():
     email = request.form['stripeEmail']
+    token = request.form['stripeToken']
     ticket_count = int(request.form['ticket_count'])
     event_id = request.form['event_id']
+
     event = Event.select().where(Event.id == event_id).get()
     ticket_price = event.price
     amount = ticket_count * ticket_price
-
-    token = request.form['stripeToken']
 
     with db.db.atomic():
         # Create tickets
