@@ -5,18 +5,12 @@ Reboot of a Ticketing System
 
 ## Development
 
-Simply call `tox` from the command line to lint and test everything.
+The best way to develop and test this project is with [pipenv](https://docs.pipenv.org/).
 
-For active development you should setup a virtual environment:
+Simply install pipenv and the dependencies with `make`.
 
-```bash
-virtualenv devenv -p python3.6
-source devenv/bin/activate
-pip install -r requirements.txt
-pip install -e .
-```
-
-You can then run the tests with `TICKETFARM_SETTINGS='tickets.config.test' pytest`.
+You can then run the tests with `TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest`
+or everything with `make ci`.
 
 The development server is started with
 
@@ -25,5 +19,7 @@ FLASK_APP=./tickets/main.py \
 STRIPE_PUBLISHABLE_KEY='...' \
 STRIPE_SECRET_KEY='...' \
 TICKETFARM_SETTINGS='tickets.config.dev' \
-flask run
+pipenv run flask run
 ```
+
+or simply `STRIPE_PUBLISHABLE_KEY='...' STRIPE_SECRET_KEY='...' make run`.
