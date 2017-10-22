@@ -1,5 +1,5 @@
 from babel.numbers import format_currency
-from flask import redirect, render_template, request, url_for
+from flask import abort, redirect, render_template, request, url_for
 import humanhash
 import stripe
 from tickets.app import app, db, stripe_keys
@@ -77,17 +77,19 @@ def charge():
 
 @app.route("/purchase/<purchase_id>")
 def purchase(purchase_id):
-    # TODO: Handle no secret or unknown purchase
     secret = request.args.get('secret')
-    purchase = Purchase.select().where((Purchase.id == purchase_id) &
-                                       (Purchase.secret == secret)).get()
-    return render_template('purchase.html', purchase=purchase)
+    try:
+        purchase = Purchase.of(purchase_id, secret)
+        return render_template('purchase.html', purchase=purchase)
+    except Purchase.DoesNotExist:
+        abort(404)
 
 
 @app.route("/ticket/<ticket_id>")
 def ticket(ticket_id):
-    # TODO: Handle no secret or unknown ticket
     secret = request.args.get('secret')
-    ticket = Ticket.select().where((Ticket.id == ticket_id) &
-                                   (Ticket.secret == secret)).get()
-    return render_template('ticket.html', ticket=ticket)
+    try:
+        ticket = Ticket.of(ticket_id, secret)
+        return render_template('ticket.html', ticket=ticket)
+    except Ticket.DoesNotExist:
+        abort(404)

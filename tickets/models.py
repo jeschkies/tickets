@@ -29,8 +29,18 @@ class Purchase(db.Model):
             for _ in range(count)
         ]
 
+    @classmethod
+    def of(cls, purchase_id, secret):
+        return Purchase.select().where((Purchase.id == purchase_id) &
+                                       (Purchase.secret == secret)).get()
+
 
 class Ticket(db.Model):
     event = ForeignKeyField(Event, related_name='messages')
     purchase = ForeignKeyField(Purchase, related_name='tickets')
     secret = CharField(default=secrets.token_hex)
+
+    @classmethod
+    def of(cls, ticket_id, secret):
+        return cls.select().where((Ticket.id == ticket_id) &
+                                  (Ticket.secret == secret)).get()
