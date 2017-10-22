@@ -68,7 +68,9 @@ def charge():
             currency='eur',
             source=token,
             description=description,
-            metadata={'purchase_id': purchase.id})
+            metadata={
+                'purchase_id': purchase.id
+            })
 
     redirect_url = url_for(
         'purchase', purchase_id=purchase.id, secret=purchase.secret)
