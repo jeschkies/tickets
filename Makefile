@@ -3,8 +3,8 @@ init:
 	pipenv install --dev
 
 ci:
-	pipenv run flake8 tickets tests
 	pipenv run yapf -irp tickets tests
+	pipenv run flake8 tickets tests
 	TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest --cov tickets --cov-report term
 
 run:
