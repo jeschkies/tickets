@@ -3,5 +3,9 @@ language: python
 python:
   - "3.6"
 cache: pip
-install: "make"
-script: make ci
+install:
+    - "make"
+    - pip install coveralls
+script:
+    - make ci
+    - coveralls
