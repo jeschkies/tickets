@@ -1,7 +1,0 @@
-Babel>=2.5
-Flask==0.12
-gunicorn>=19.7.1
--egit+https://github.com/nazavode/humanhash.git#egg=humanhash
-peewee>=2.10.1
-stripe>=1.62.0
-yapf==0.17.0
