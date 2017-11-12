@@ -24,5 +24,19 @@ pipenv run flask run
 
 or simply `STRIPE_PUBLISHABLE_KEY='...' STRIPE_SECRET_KEY='...' make run`.
 
-Migrate any Postgresql database with `DATABASE_URL=postgresql://user:pw@url`.
-The environment variable is also required to run the app in production.
+Migrate any Postgresql database with `DATABASE_URL=postgresql://user:pw@url make
+migrate`. The environment variable is also required to run the app in production.
+
+## Deployment
+
+Migrate the database with
+
+```
+DATABASE_URL=postgresql://user:pw@url make migrate
+```
+
+and deploy the newest version to heroku with
+
+```
+make deploy
+```
