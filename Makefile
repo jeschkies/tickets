@@ -3,10 +3,10 @@ init:
 	pipenv install --dev
 
 ci:
-	pipenv run flake8 tickets tests
 	pipenv run yapf -irp tickets tests
+	pipenv run flake8 tickets tests
 	pipenv run alembic -n test upgrade head
-	TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest
+	TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest --cov tickets --cov-report term
 
 run:
 	pipenv run alembic -n dev upgrade head

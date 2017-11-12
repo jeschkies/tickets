@@ -36,6 +36,17 @@ def test_purchase(database):
     assert ids == sorted([purchase_1.id, purchase_2.id])
 
 
+def test_purchase_of(database):
+    event = Event.create(price=2500, title='METZ', description='at Logo')
+    purchase = event.create_purchase(email='karsten@ticketfarm.de')
+
+    selected = Purchase.of(purchase.id, purchase.secret)
+    selected.email == 'karsten@ticketfarm.de'
+
+    with pytest.raises(Purchase.DoesNotExist):
+        Purchase.of(42, 'notasecret')
+
+
 def test_ticket(database):
     event = Event.create(price=2500, title='METZ', description='at Logo')
     purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
@@ -49,3 +60,15 @@ def test_ticket(database):
 
     assert tickets[0].event.id == event.id
     assert tickets[1].event.id == event.id
+
+
+def test_ticket_of(database):
+    event = Event.create(price=2500, title='METZ', description='at Logo')
+    purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
+    tickets = purchase.create_tickets(2)
+
+    selected = Ticket.of(tickets[0].id, tickets[0].secret)
+    assert selected.event.id == event.id
+
+    with pytest.raises(Ticket.DoesNotExist):
+        Ticket.of(42, 'notsosecret')
