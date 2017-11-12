@@ -1,5 +1,6 @@
 import pytest
 from tickets.app import app
+from tickets.models import Event, Purchase
 from tickets.views import *  # NOQA
 
 
@@ -36,8 +37,10 @@ def test_ticket_found(client):
     purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
     ticket = purchase.create_tickets(1)[0]
 
-    response = client.get('ticket/{}?secret={}'.format(ticket.id, ticket.secret))
+    response = client.get('ticket/{}?secret={}'.format(ticket.id,
+                                                       ticket.secret))
     assert response.status_code == 200
+
 
 def test_ticket_not_found(client):
     response = client.get('ticket/42')
