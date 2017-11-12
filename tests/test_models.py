@@ -6,7 +6,6 @@ from tickets.models import Event, Purchase, Ticket
 @pytest.fixture
 def database():
     db.db.connect()
-    db.db.create_tables([Event, Purchase, Ticket])
     yield db
     db.db.close()
 

@@ -1,1 +1,1 @@
-DB_NAME = ':memory:'
+DB_NAME = 'test.db'
