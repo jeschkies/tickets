@@ -11,6 +11,9 @@ ci:
 migrate:
 	pipenv run alembic -n prod upgrade head
 
+deploy:
+	git push heroku master
+
 run:
 	pipenv run alembic -n dev upgrade head
 	TICKETFARM_SETTINGS='tickets.config.dev' FLASK_APP=./tickets/main.py pipenv run flask run
