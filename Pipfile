@@ -12,6 +12,7 @@ humanhash = {git = "https://github.com/nazavode/humanhash.git", editable = true}
 peewee = "*"
 stripe = "*"
 alembic = "*"
+"psycopg2" = "*"
 
 
 [dev-packages]

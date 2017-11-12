@@ -3,10 +3,13 @@ init:
 	pipenv install --dev
 
 ci:
-	pipenv run yapf -irp tickets tests migrations/versions
+	pipenv run yapf -irp tickets tests migrations
 	pipenv run flake8 tickets tests
 	pipenv run alembic -n test upgrade head
-	TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest --cov tickets --cov-report term
+	TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest --cov-config .coveragerc --cov tickets --cov-report term
+
+migrate:
+	pipenv run alembic -n prod upgrade head
 
 run:
 	pipenv run alembic -n dev upgrade head

@@ -16,25 +16,6 @@ def currency_filter(cents):
     return format_currency(cents / 100, 'EUR', locale='de_DE')
 
 
-@app.before_request
-def before_request():
-    db.db.connect()
-    # TODO: Do once on startup
-    db.db.create_tables([Event, Purchase, Ticket], safe=True)
-
-    title = "METZ in Hamburg"
-    description = ("Mi, 13.12.17, 21:00 Uhr\n"
-                   "Knust - Hamburg\n"
-                   "Neuer Kamp 30, 20357 HAMBURG\n")
-    Event.create(price=2500, title=title, description=description)
-
-
-@app.after_request
-def after_request(response):
-    db.db.close()
-    return response
-
-
 @app.route("/")
 def index():
     event = Event.select().where(Event.id == 1).get()
