@@ -11,6 +11,7 @@ gunicorn = "*"
 humanhash = {git = "https://github.com/nazavode/humanhash.git", editable = true}
 peewee = "*"
 stripe = "*"
+alembic = "*"
 
 
 [dev-packages]

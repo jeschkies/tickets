@@ -1,12 +1,12 @@
 import pytest
 from tickets.app import db
-from tickets.models import Event, Purchase, Ticket
+from tickets.models import Event, Purchase
 
 
 @pytest.fixture
 def database():
     db.db.connect()
-    db.db.create_tables([Event, Purchase, Ticket])
+    #    db.db.create_tables([Event, Purchase, Ticket])
     yield db
     db.db.close()
 
