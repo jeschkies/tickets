@@ -48,7 +48,8 @@ class Database(object):
             user=db_url.username,
             password=db_url.password,
             host=db_url.hostname,
-            port=db_url.port)
+            port=db_url.port,
+            register_hstore=False)
 
 
 db = Database(app)
