@@ -27,6 +27,7 @@ def index():
 
 @app.route("/charge", methods=['POST'])
 def charge():
+    print('exception will come')
     email = request.form['stripeEmail']
     token = request.form['stripeToken']
     ticket_count = int(request.form['ticket_count'])
@@ -36,7 +37,7 @@ def charge():
     ticket_price = event.price
     amount = ticket_count * ticket_price
 
-    with db.db.atomic():
+    with db.db_engine.atomic():
         # Create tickets
         purchase = event.create_purchase(email)
         purchase.create_tickets(ticket_count)
@@ -60,6 +61,7 @@ def charge():
 
 @app.route("/purchase/<purchase_id>")
 def purchase(purchase_id):
+    print('in purchase handling')
     secret = request.args.get('secret')
     try:
         purchase = Purchase.of(purchase_id, secret)
