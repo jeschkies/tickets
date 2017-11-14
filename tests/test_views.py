@@ -1,12 +1,13 @@
 import pytest
-from tickets.app import app
+from tickets.app import app, db
 from tickets.models import Event, Purchase
 from tickets.views import *  # NOQA
 
 
 @pytest.fixture
 def client():
-    return app.test_client()
+    with app.app_context():
+        yield app.test_client()
 
 
 def test_index(client):
@@ -20,8 +21,9 @@ def test_charge_no_data(client):
 
 
 def test_purchase_found(client):
-    event = Event.create(price=2500, title='METZ', description='at Logo')
-    p = event.create_purchase(email='karsten@ticketfarm.de')
+    with db.db_engine.execution_context():
+        event = Event.create(price=2500, title='METZ', description='at Logo')
+        p = event.create_purchase(email='karsten@ticketfarm.de')
 
     response = client.get('purchase/{}?secret={}'.format(p.id, p.secret))
     assert response.status_code == 200
@@ -33,9 +35,10 @@ def test_purchase_not_found(client):
 
 
 def test_ticket_found(client):
-    event = Event.create(price=2500, title='METZ', description='at Logo')
-    purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
-    ticket = purchase.create_tickets(1)[0]
+    with db.db_engine.execution_context():
+        event = Event.create(price=2500, title='METZ', description='at Logo')
+        purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
+        ticket = purchase.create_tickets(1)[0]
 
     response = client.get('ticket/{}?secret={}'.format(ticket.id,
                                                        ticket.secret))

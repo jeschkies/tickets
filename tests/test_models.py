@@ -5,7 +5,9 @@ from tickets.models import Event, Purchase, Ticket
 
 @pytest.fixture
 def database():
+    db.db_engine.connect()
     yield db
+    db.db_engine.close()
     # TODO: Clean all create events afterwards
 
 
