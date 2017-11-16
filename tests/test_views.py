@@ -56,6 +56,11 @@ def test_charge_no_purchase_on_failed_stripe(client):
 
 
 def test_charge_successful(client):
+    def mock_charge(self, token):
+        pass
+
+    Purchase.charge = mock_charge
+
     # Given a new event and a proper request
     with db.db_engine.execution_context():
         event = Event.create(price=2500, title='METZ', description='at Logo')
@@ -69,6 +74,14 @@ def test_charge_successful(client):
     # When we request a charge
     response = client.post(
         'charge', data=form_data, content_type='multipart/form-data')
+
+    # Then a purchase with tickets is created.
+    purchase = Purchase.select().where(Purchase.event_id == event.id).get()
+    assert purchase.email == 'ty@gmail.com'
+    assert len(purchase.tickets) == 2
+
+    # And a redirect is returned.
+    assert response.status_code == 302
 
 
 def test_purchase_found(client):
