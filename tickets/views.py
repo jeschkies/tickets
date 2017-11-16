@@ -1,7 +1,6 @@
 from babel.numbers import format_currency
 from flask import abort, redirect, render_template, request, url_for
 import humanhash
-import stripe
 from tickets.app import app, db, stripe_keys
 from tickets.models import Event, Purchase, Ticket
 
@@ -33,9 +32,10 @@ def charge():
     ticket_count = int(request.form['ticket_count'])
     event_id = request.form['event_id']
 
-    event = Event.select().where(Event.id == event_id).get()
-    ticket_price = event.price
-    amount = ticket_count * ticket_price
+    try:
+        event = Event.select().where(Event.id == event_id).get()
+    except Event.DoesNotExist:
+        abort(404)
 
     with db.db_engine.atomic():
         # Create tickets
@@ -43,16 +43,7 @@ def charge():
         purchase.create_tickets(ticket_count)
 
         # Charge money
-        description = "Your purchase of {} tickets for METZ".format(
-            ticket_count)
-        stripe.Charge.create(
-            amount=amount,
-            currency='eur',
-            source=token,
-            description=description,
-            metadata={
-                'purchase_id': purchase.id
-            })
+        purchase.charge(token)
 
     redirect_url = url_for(
         'purchase', purchase_id=purchase.id, secret=purchase.secret)
@@ -61,7 +52,6 @@ def charge():
 
 @app.route("/purchase/<purchase_id>")
 def purchase(purchase_id):
-    print('in purchase handling')
     secret = request.args.get('secret')
     try:
         purchase = Purchase.of(purchase_id, secret)

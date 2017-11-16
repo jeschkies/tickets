@@ -20,6 +20,70 @@ def test_charge_no_data(client):
     assert response.status_code == 400
 
 
+def test_charge_no_event(client):
+    form_data = {
+        'stripeEmail': 'ty@gmail.com',
+        'stripeToken': 'deadbeef',
+        'ticket_count': 2,
+        'event_id': 42000
+    }
+    response = client.post(
+        'charge', data=form_data, content_type='multipart/form-data')
+    assert response.status_code == 404
+
+
+def test_charge_no_purchase_on_failed_stripe(client):
+    # Test that no purchase is saved in database when charge via Stripe fails.
+
+    # Given a new event and a proper request
+    with db.db_engine.execution_context():
+        event = Event.create(price=2500, title='METZ', description='at Logo')
+    form_data = {
+        'stripeEmail': 'ty@gmail.com',
+        'stripeToken': 'deadbeef',
+        'ticket_count': 2,
+        'event_id': event.id
+    }
+
+    # When we request a charge
+    response = client.post(
+        'charge', data=form_data, content_type='multipart/form-data')
+
+    # Then the event has no purchases, ie no charge was recorded.
+    with pytest.raises(Purchase.DoesNotExist):
+        Purchase.select().where(Purchase.event_id == event.id).get()
+    assert response.status_code == 500
+
+
+def test_charge_successful(client):
+    def mock_charge(self, token):
+        pass
+
+    Purchase.charge = mock_charge
+
+    # Given a new event and a proper request
+    with db.db_engine.execution_context():
+        event = Event.create(price=2500, title='METZ', description='at Logo')
+    form_data = {
+        'stripeEmail': 'ty@gmail.com',
+        'stripeToken': 'deadbeef',
+        'ticket_count': 2,
+        'event_id': event.id
+    }
+
+    # When we request a charge
+    response = client.post(
+        'charge', data=form_data, content_type='multipart/form-data')
+
+    # Then a purchase with tickets is created.
+    purchase = Purchase.select().where(Purchase.event_id == event.id).get()
+    assert purchase.email == 'ty@gmail.com'
+    assert len(purchase.tickets) == 2
+
+    # And a redirect is returned.
+    assert response.status_code == 302
+
+
 def test_purchase_found(client):
     with db.db_engine.execution_context():
         event = Event.create(price=2500, title='METZ', description='at Logo')

@@ -1,5 +1,6 @@
 from peewee import (CharField, ForeignKeyField, IntegerField, TextField)
 import secrets
+import stripe
 from tickets.app import db
 
 
@@ -21,13 +22,35 @@ class Purchase(db.Model):
     secret = CharField(default=secrets.token_hex)
 
     def create_ticket(self):
+        ''' Create one more ticket for purchase.'''
         return Ticket.create(event=self.event, purchase=self)
 
     def create_tickets(self, count):
+        ''' Create tickets for purchase.'''
         return [
             Ticket.create(event=self.event, purchase=self)
             for _ in range(count)
         ]
+
+    def amount(self):
+        ''' Calculate amount for purcahse.'''
+        return self.event.price * len(self.tickets)
+
+    def description(self):
+        ''' Descripe purchase.'''
+        ticket_count = len(self.tickets)
+        return "Your purchase of {} tickets for METZ".format(ticket_count)
+
+    def charge(self, token):
+        ''' Call Stripe to make a charge for this purchase.'''
+        stripe.Charge.create(
+            amount=self.amount(),
+            currency='eur',
+            source=token,
+            description=self.description(),
+            metadata={
+                'purchase_id': self.id
+            })
 
     @classmethod
     def of(cls, purchase_id, secret):
