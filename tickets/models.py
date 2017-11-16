@@ -9,9 +9,6 @@ class Event(db.Model):
     title = TextField()
     description = TextField()
 
-    def add_ticket(self, ticket):
-        self.__tickets.append(ticket)
-
     def create_purchase(self, email):
         return Purchase.create(event=self, email=email)
 
