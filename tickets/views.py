@@ -33,7 +33,11 @@ def charge():
     ticket_count = int(request.form['ticket_count'])
     event_id = request.form['event_id']
 
-    event = Event.select().where(Event.id == event_id).get()
+    try:
+        event = Event.select().where(Event.id == event_id).get()
+    except Event.DoesNotExist:
+        abort(404)
+
     ticket_price = event.price
     amount = ticket_count * ticket_price
 
@@ -61,7 +65,6 @@ def charge():
 
 @app.route("/purchase/<purchase_id>")
 def purchase(purchase_id):
-    print('in purchase handling')
     secret = request.args.get('secret')
     try:
         purchase = Purchase.of(purchase_id, secret)
