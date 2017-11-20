@@ -2,6 +2,7 @@ from flask import Flask
 import os
 from peewee import Model, SqliteDatabase
 from playhouse.pool import PooledPostgresqlExtDatabase
+#from raven.contrib.flask import Sentry
 import stripe
 from urllib.parse import urlparse
 
@@ -10,6 +11,7 @@ app.config.from_object('tickets.config.default')
 app.config.from_object(
     os.getenv('TICKETFARM_SETTINGS', 'tickets.config.default'))
 
+# Stripe
 stripe_keys = {
     'secret_key': os.environ.get('STRIPE_SECRET_KEY', None),
     'publishable_key': os.environ.get('STRIPE_PUBLISHABLE_KEY', None)
@@ -17,7 +19,12 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
+# Sentry
+# DSN is provided by environment variable `SENTRY_DSN`.
+# sentry = Sentry(app)
 
+
+# Database
 class Database(object):
     def __init__(self, app):
         self.db_engine = self.sqlite() if self.is_sqlite() else self.postgres()

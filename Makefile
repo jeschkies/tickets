@@ -24,3 +24,4 @@ debug:
 
 clean:
 	rm -f test.db
+	pipenv --rm
