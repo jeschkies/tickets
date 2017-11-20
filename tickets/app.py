@@ -2,7 +2,7 @@ from flask import Flask
 import os
 from peewee import Model, SqliteDatabase
 from playhouse.pool import PooledPostgresqlExtDatabase
-from raven.contrib.flask import Sentry
+# from raven.contrib.flask import Sentry
 import stripe
 from urllib.parse import urlparse
 
@@ -21,7 +21,7 @@ stripe.api_key = stripe_keys['secret_key']
 
 # Sentry
 # DSN is provided by environment variable `SENTRY_DSN`.
-sentry = Sentry(app)
+# sentry = Sentry(app)
 
 
 # Database

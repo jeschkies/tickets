@@ -7,15 +7,14 @@ name = "pypi"
 
 [packages]
 
-babel = "*"
-flask = "*"
+Babel = "*"
+Flask = "*"
 gunicorn = "*"
 humanhash = {git = "https://github.com/nazavode/humanhash.git", editable = true}
 peewee = "*"
 stripe = "*"
 alembic = "*"
 "psycopg2" = "*"
-raven = "*"
 
 
 [dev-packages]
