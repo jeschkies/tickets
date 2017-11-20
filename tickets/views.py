@@ -26,7 +26,6 @@ def index():
 
 @app.route("/charge", methods=['POST'])
 def charge():
-    print('exception will come')
     email = request.form['stripeEmail']
     token = request.form['stripeToken']
     ticket_count = int(request.form['ticket_count'])
