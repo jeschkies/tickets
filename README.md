@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jeschkies/tickets.svg?branch=master)](https://travis-ci.org/jeschkies/tickets) [![Coverage Status](https://coveralls.io/repos/github/jeschkies/tickets/badge.svg)](https://coveralls.io/github/jeschkies/tickets)
+[![Build Status](https://travis-ci.org/jeschkies/tickets.svg?branch=master)](https://travis-ci.org/jeschkies/tickets) [![Coverage Status](https://coveralls.io/repos/github/jeschkies/tickets/badge.svg?branch=master&service=github)](https://coveralls.io/github/jeschkies/tickets)
 
 # tickets
 Reboot of a Ticketing System
