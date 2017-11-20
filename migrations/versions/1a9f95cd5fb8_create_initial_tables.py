@@ -16,14 +16,12 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('event',
-                    sa.Column('id', sa.Integer, primary_key=True),
+    op.create_table('event', sa.Column('id', sa.Integer, primary_key=True),
                     sa.Column('price', sa.Integer, nullable=False),
                     sa.Column('title', sa.Unicode(200), nullable=False),
                     sa.Column('description', sa.Text, nullable=False))
 
-    op.create_table('purchase',
-                    sa.Column('id', sa.Integer, primary_key=True),
+    op.create_table('purchase', sa.Column('id', sa.Integer, primary_key=True),
                     sa.Column(
                         'event_id',
                         sa.Integer,
@@ -33,8 +31,7 @@ def upgrade():
                     sa.Column('secret', sa.String, nullable=False))
     op.create_index('purchase_event_id', 'purchase', ['event_id'])
 
-    op.create_table('ticket',
-                    sa.Column('id', sa.Integer, primary_key=True),
+    op.create_table('ticket', sa.Column('id', sa.Integer, primary_key=True),
                     sa.Column(
                         'event_id',
                         sa.Integer,
