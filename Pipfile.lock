@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1f238551e998734760294b4600e03f8dcac3e84df67edc8b2fdcb18863717363"
+            "sha256": "0d50264e22881959ce926163a5a974024df5ff03cc0efea55cc8ab3cebfa56bf"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -227,10 +227,6 @@
                 "sha256:3a369c70d59cb1224f00e05e329fdad35683aba819ec8f778dee4dd1f51c660e"
             ],
             "version": "==1.75.0"
-        },
-        "tickets": {
-            "editable": true,
-            "git": "git@github.com:jeschkies/tickets.git@a794466536a6041578f5f60865d37dc74137e4ea"
         },
         "urllib3": {
             "hashes": [

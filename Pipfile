@@ -15,8 +15,7 @@ peewee = "*"
 stripe = "*"
 alembic = "*"
 "psycopg2" = "*"
-raven = "*"
-blinker = "*"
+raven = {extras = ["flask"]}
 
 
 [dev-packages]

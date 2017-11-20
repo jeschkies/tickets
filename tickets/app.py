@@ -21,7 +21,8 @@ stripe.api_key = stripe_keys['secret_key']
 
 # Sentry
 # DSN is provided by environment variable `SENTRY_DSN`.
-sentry = Sentry(app)
+if app.config['SENTRY_ENABLED']:
+    sentry = Sentry(app)
 
 
 # Database
