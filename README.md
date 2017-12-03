@@ -52,6 +52,8 @@ The app takes the following environment variables
 * `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` for Stripe payments.
 * `DATABASE_URL` for configuring the PostgreSQL database connection.
 * `TICKETFARM_SETTINGS` should to a module in `tickets.config`.
+* `POSTMARK_API_TOKEN` for configuring Postmark mail notifications. Use
+  `POSTMARK_API_TEST` as token for testing.
 
 The migrations configuration in `alembic.ini` includes the following targets
 

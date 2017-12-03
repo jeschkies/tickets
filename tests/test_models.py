@@ -53,7 +53,8 @@ def test_ticket(database):
     tickets = purchase.create_tickets(2)
     ticket_ids = sorted([t.id for t in tickets])
 
-    assert purchase.amount() == 5000
+    assert purchase.amount == 5000
+    assert purchase.email == 'karsten@ticketfarm.de'
 
     assert tickets[0].secret != tickets[1]
 

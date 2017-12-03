@@ -43,6 +43,7 @@ def charge():
 
         # Charge money
         purchase.charge(token)
+        purchase.notify()
 
     redirect_url = url_for(
         'purchase', purchase_id=purchase.id, secret=purchase.secret)
