@@ -22,26 +22,15 @@ def upgrade():
                     sa.Column('description', sa.Text, nullable=False))
 
     op.create_table('purchase', sa.Column('id', sa.Integer, primary_key=True),
-                    sa.Column(
-                        'event_id',
-                        sa.Integer,
-                        sa.ForeignKey('event.id'),
-                        nullable=False),
+                    sa.Column('event_id', sa.Integer, sa.ForeignKey('event.id'), nullable=False),
                     sa.Column('email', sa.Text, nullable=False),
                     sa.Column('secret', sa.String, nullable=False))
     op.create_index('purchase_event_id', 'purchase', ['event_id'])
 
     op.create_table('ticket', sa.Column('id', sa.Integer, primary_key=True),
+                    sa.Column('event_id', sa.Integer, sa.ForeignKey('event.id'), nullable=False),
                     sa.Column(
-                        'event_id',
-                        sa.Integer,
-                        sa.ForeignKey('event.id'),
-                        nullable=False),
-                    sa.Column(
-                        'purchase_id',
-                        sa.Integer,
-                        sa.ForeignKey('purchase.id'),
-                        nullable=False),
+                        'purchase_id', sa.Integer, sa.ForeignKey('purchase.id'), nullable=False),
                     sa.Column('secret', sa.String, nullable=False))
     op.create_index('ticket_event_id', 'ticket', ['event_id'])
     op.create_index('ticket_purchase_id', 'ticket', ['purchase_id'])

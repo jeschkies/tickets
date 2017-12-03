@@ -26,10 +26,7 @@ class Purchase(db.Model):
     def create_tickets(self, count):
         ''' Create tickets for purchase.'''
         assert count > 0
-        return [
-            Ticket.create(event=self.event, purchase=self)
-            for _ in range(count)
-        ]
+        return [Ticket.create(event=self.event, purchase=self) for _ in range(count)]
 
     @property
     def amount(self):
@@ -40,8 +37,7 @@ class Purchase(db.Model):
     def description(self):
         ''' Descripe purchase.'''
         ticket_count = len(self.tickets)
-        return "Your purchase of {} tickets for {}".format(
-            ticket_count, self.event.title)
+        return "Your purchase of {} tickets for {}".format(ticket_count, self.event.title)
 
     @property
     def subject(self):
@@ -52,8 +48,7 @@ class Purchase(db.Model):
 
     @property
     def body(self):
-        url = external_url_for(
-            'purchase', purchase_id=self.id, secret=self.secret)
+        url = external_url_for('purchase', purchase_id=self.id, secret=self.secret)
         return """Thanks for your purchase!
 
 You can download your tickets under: {url}.
@@ -88,5 +83,4 @@ class Ticket(db.Model):
 
     @classmethod
     def of(cls, ticket_id, secret):
-        return cls.select().where((Ticket.id == ticket_id) &
-                                  (Ticket.secret == secret)).get()
+        return cls.select().where((Ticket.id == ticket_id) & (Ticket.secret == secret)).get()

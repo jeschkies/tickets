@@ -21,7 +21,7 @@ init:
 
 test:
 	pipenv run yapf -irp tickets tests migrations
-	pipenv run flake8 tickets tests
+	pipenv run flake8 --max-line-length=100 tickets tests
 	pipenv run alembic -n test upgrade head
 	TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest --cov-config .coveragerc --cov tickets --cov-report term
 
