@@ -40,3 +40,13 @@ and deploy the newest version to heroku with
 ```
 make deploy
 ```
+
+## Configuration
+
+The app takes the following environment variables
+
+* `SENTRY_DSN` for configuring the connection to sentry. This can be empty for
+    tests.
+* `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` for Stripe payments.
+* `DATABASE_URL` for configuring the PostgreSQL database connection.
+* `TICKETFARM_SETTINGS` should to a module in `tickets.config`.
