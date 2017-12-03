@@ -27,8 +27,7 @@ def test_charge_no_event(client):
         'ticket_count': 2,
         'event_id': 42000
     }
-    response = client.post(
-        'charge', data=form_data, content_type='multipart/form-data')
+    response = client.post('charge', data=form_data, content_type='multipart/form-data')
     assert response.status_code == 404
 
 
@@ -46,8 +45,7 @@ def test_charge_no_purchase_on_failed_stripe(client):
     }
 
     # When we request a charge
-    response = client.post(
-        'charge', data=form_data, content_type='multipart/form-data')
+    response = client.post('charge', data=form_data, content_type='multipart/form-data')
 
     # Then the event has no purchases, ie no charge was recorded.
     with pytest.raises(Purchase.DoesNotExist):
@@ -72,8 +70,7 @@ def test_charge_successful(client):
     }
 
     # When we request a charge
-    response = client.post(
-        'charge', data=form_data, content_type='multipart/form-data')
+    response = client.post('charge', data=form_data, content_type='multipart/form-data')
 
     # Then a purchase with tickets is created.
     purchase = Purchase.select().where(Purchase.event_id == event.id).get()
@@ -103,17 +100,15 @@ def test_ticket_found(client):
         event = Event.create(price=2500, title='METZ', description='at Logo')
         purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
         ticket = purchase.create_tickets(1)[0]
-        ticket.secret = '922415d39433cdc6a258bddb1062f808cdbd1595a8132e443ec85b65f6c8edb2'  # NOQA
+        ticket.secret = '922415d39433cdc6a258bddb1062f808cdbd1595a8132e443ec85b65f6c8edb2'
         ticket.save()
 
     # Query ticket.
-    response = client.get('ticket/{}?secret={}'.format(ticket.id,
-                                                       ticket.secret))
+    response = client.get('ticket/{}?secret={}'.format(ticket.id, ticket.secret))
     assert response.status_code == 200
 
     # Query ticket QR code as svg.
-    response = client.get('ticket/{}.svg?secret={}'.format(
-        ticket.id, ticket.secret))
+    response = client.get('ticket/{}.svg?secret={}'.format(ticket.id, ticket.secret))
     assert response.status_code == 200
 
     # All data was streamed.

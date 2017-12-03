@@ -27,8 +27,7 @@ def test_purchase(database):
 
     assert purchase_1.secret != purchase_2.secret
 
-    fetched_purchase_1 = Purchase.select().where(
-        Purchase.id == purchase_1.id).get()
+    fetched_purchase_1 = Purchase.select().where(Purchase.id == purchase_1.id).get()
 
     assert fetched_purchase_1.email == 'karsten@ticketfarm.de'
 

@@ -9,8 +9,7 @@ from tickets.mail import (Postmark, TestMailer)
 
 app = Flask(__name__)
 app.config.from_object('tickets.config.default')
-app.config.from_object(
-    os.getenv('TICKETFARM_SETTINGS', 'tickets.config.default'))
+app.config.from_object(os.getenv('TICKETFARM_SETTINGS', 'tickets.config.default'))
 
 # Stripe
 stripe_keys = {

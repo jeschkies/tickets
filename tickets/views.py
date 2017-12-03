@@ -21,9 +21,7 @@ def currency_filter(cents):
 def index():
     event = Event.select().where(Event.id == 1).get()
     return render_template(
-        'index.html',
-        stripe_publishable_key=stripe_keys['publishable_key'],
-        event=event)
+        'index.html', stripe_publishable_key=stripe_keys['publishable_key'], event=event)
 
 
 @app.route("/charge", methods=['POST'])
@@ -47,8 +45,7 @@ def charge():
         purchase.charge(token)
         purchase.notify()
 
-    redirect_url = url_for(
-        'purchase', purchase_id=purchase.id, secret=purchase.secret)
+    redirect_url = url_for('purchase', purchase_id=purchase.id, secret=purchase.secret)
     return redirect(redirect_url, code=302)
 
 
