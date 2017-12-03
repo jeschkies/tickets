@@ -1,6 +1,8 @@
 from babel.numbers import format_currency
-from flask import abort, redirect, render_template, request, url_for
+from flask import abort, redirect, render_template, request, send_file, url_for
 import humanhash
+from io import BytesIO
+import pyqrcode
 from tickets.app import app, db, stripe_keys
 from tickets.models import Event, Purchase, Ticket
 
@@ -68,3 +70,18 @@ def ticket(ticket_id):
         return render_template('ticket.html', ticket=ticket)
     except Ticket.DoesNotExist:
         abort(404)
+
+
+@app.route("/ticket/<ticket_id>.svg")
+def ticket_qrcode(ticket_id):
+    secret = request.args.get('secret')
+    try:
+        Ticket.of(ticket_id, secret)
+    except Ticket.DoesNotExist:
+        abort(404)
+
+    qr = pyqrcode.create(secret)
+    out = BytesIO()
+    qr.svg(out, scale=4)
+    out.seek(0)
+    return send_file(out, mimetype='image/svg+xml')

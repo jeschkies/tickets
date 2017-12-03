@@ -4,7 +4,7 @@
     <h1>Deine METZ Tickets</h1>
     {% for ticket in purchase.tickets %}
     <div class="row">
-        <p>Ticket id {{ ticket.id  }}. <a href="{{ url_for('ticket', ticket_id=ticket.id, secret=ticket.secret)}}">Anzeigen</a></p>
+        <p>Ticket id {{ ticket.id  }}. <a href="{{ url_for('ticket', ticket_id=ticket.id, secret=ticket.secret) }}">Anzeigen</a></p>
     </div>
     {% endfor %}
 </div>

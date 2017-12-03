@@ -103,12 +103,26 @@ def test_ticket_found(client):
         event = Event.create(price=2500, title='METZ', description='at Logo')
         purchase = Purchase.create(email='karsten@ticketfarm.de', event=event)
         ticket = purchase.create_tickets(1)[0]
+        ticket.secret = '922415d39433cdc6a258bddb1062f808cdbd1595a8132e443ec85b65f6c8edb2'  # NOQA
+        ticket.save()
 
+    # Query ticket.
     response = client.get('ticket/{}?secret={}'.format(ticket.id,
                                                        ticket.secret))
     assert response.status_code == 200
 
+    # Query ticket QR code as svg.
+    response = client.get('ticket/{}.svg?secret={}'.format(
+        ticket.id, ticket.secret))
+    assert response.status_code == 200
+
+    # All data was streamed.
+    assert response.calculate_content_length() == 3409
+
 
 def test_ticket_not_found(client):
     response = client.get('ticket/42')
+    assert response.status_code == 404
+
+    response = client.get('ticket/42.svg?secret=deadbeef')
     assert response.status_code == 404

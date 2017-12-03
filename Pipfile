@@ -16,6 +16,7 @@ stripe = "*"
 alembic = "*"
 "psycopg2" = "*"
 raven = {extras = ["flask"]}
+pyqrcode = "*"
 
 
 [dev-packages]
