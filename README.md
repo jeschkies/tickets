@@ -10,7 +10,7 @@ The best way to develop and test this project is with [pipenv](https://docs.pipe
 Simply install pipenv and the dependencies with `make`.
 
 You can then run the tests with `TICKETFARM_SETTINGS='tickets.config.test' pipenv run pytest`
-or everything with `make ci`.
+or everything with `make test`.
 
 The development server is started with
 
@@ -22,7 +22,9 @@ TICKETFARM_SETTINGS='tickets.config.dev' \
 pipenv run flask run
 ```
 
-or simply `STRIPE_PUBLISHABLE_KEY='...' STRIPE_SECRET_KEY='...' make run`.
+or simply `STRIPE_PUBLISHABLE_KEY='...' STRIPE_SECRET_KEY='...' make serve`.
+
+Add test data with `make fixtures`.
 
 Migrate any Postgresql database with `DATABASE_URL=postgresql://user:pw@url make
 migrate`. The environment variable is also required to run the app in production.
@@ -40,3 +42,21 @@ and deploy the newest version to heroku with
 ```
 make deploy
 ```
+
+## Configuration
+
+The app takes the following environment variables
+
+* `SENTRY_DSN` for configuring the connection to sentry. This can be empty for
+    tests.
+* `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` for Stripe payments.
+* `DATABASE_URL` for configuring the PostgreSQL database connection.
+* `TICKETFARM_SETTINGS` should to a module in `tickets.config`.
+
+The migrations configuration in `alembic.ini` includes the following targets
+
+* `prod` for migrating the production PostgreSQL database.
+* `dev` for migrating a development SQLite database.
+* `test` for migrating the test SQLite database `test.db`.
+
+Further app related configuration can be found in `tickets/config/default.py`.
