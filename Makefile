@@ -16,10 +16,6 @@ deploy:
 
 serve:
 	pipenv run alembic -n dev upgrade head
-	TICKETFARM_SETTINGS='tickets.config.dev' FLASK_APP=./tickets/main.py pipenv run flask run
-
-serve-debug:
-	pipenv run alembic -n dev upgrade head
 	TICKETFARM_SETTINGS='tickets.config.dev' FLASK_APP=./tickets/main.py FLASK_DEBUG=1 pipenv run flask run
 
 clean:
