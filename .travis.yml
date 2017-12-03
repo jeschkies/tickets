@@ -4,8 +4,12 @@ python:
   - "3.6"
 cache: pip
 install:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
     - "make"
     - pip install coveralls
 script:
     - make clean ci
     - coveralls
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
