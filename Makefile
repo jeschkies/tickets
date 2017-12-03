@@ -18,5 +18,9 @@ serve:
 	pipenv run alembic -n dev upgrade head
 	TICKETFARM_SETTINGS='tickets.config.dev' FLASK_APP=./tickets/main.py FLASK_DEBUG=1 pipenv run flask run
 
+fixtures:
+	pipenv run alembic -n dev upgrade head
+	pipenv run python tests/fixtures/dev.py
+
 clean:
 	rm -f test.db
