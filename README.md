@@ -24,6 +24,8 @@ pipenv run flask run
 
 or simply `STRIPE_PUBLISHABLE_KEY='...' STRIPE_SECRET_KEY='...' make serve`.
 
+Add test data with `make fixtures`.
+
 Migrate any Postgresql database with `DATABASE_URL=postgresql://user:pw@url make
 migrate`. The environment variable is also required to run the app in production.
 
