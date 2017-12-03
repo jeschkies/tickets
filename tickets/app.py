@@ -5,6 +5,7 @@ from playhouse.pool import PooledPostgresqlExtDatabase
 from raven.contrib.flask import Sentry
 import stripe
 from urllib.parse import urlparse
+from tickets.mail import (Postmark, TestMailer)
 
 app = Flask(__name__)
 app.config.from_object('tickets.config.default')
@@ -18,6 +19,11 @@ stripe_keys = {
 }
 
 stripe.api_key = stripe_keys['secret_key']
+
+if app.config['MAIL_ENGINE'] == 'mail.Postmark':
+    mail = Postmark(os.environ.get('POSTMARK_API_TOKEN', 'POSTMARK_API_TEST'))
+else:
+    mail = TestMailer()
 
 # Sentry
 # DSN is provided by environment variable `SENTRY_DSN`.

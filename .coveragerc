@@ -1,5 +1,6 @@
 [run]
 branch = True
 omit =
+    tickets/app.py
     tickets/config/*
     tickets/main.py
