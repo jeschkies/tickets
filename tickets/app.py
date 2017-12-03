@@ -71,7 +71,8 @@ db = Database(app)
 
 @app.before_request
 def connect_db():
-    db.db_engine.connect()
+    if db.db_engine.is_closed():
+        db.db_engine.connect()
 
 
 @app.teardown_appcontext

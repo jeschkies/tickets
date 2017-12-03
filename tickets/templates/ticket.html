@@ -4,6 +4,7 @@
     <h1>Dein METZ Ticket</h1>
     <div class="row">
         <p>Ticket id {{ ticket.id }} Schlüssel <code>{{ ticket.secret | humanize }}</code></p>
+        <img src="{{ url_for('ticket', ticket_id=ticket.id) }}.svg?secret={{ ticket.secret }}">
     </div>
 </div>
 {% endblock %}
