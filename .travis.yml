@@ -4,7 +4,7 @@ python:
   - "3.6"
 cache: pip
 install:
-    - "make"
+    - make init
     - pip install coveralls
 script:
     - make clean test
