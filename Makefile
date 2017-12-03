@@ -1,6 +1,6 @@
 init:
-	pip install pipenv
-	pipenv install --dev
+	pip3 install pipenv
+	pipenv install --dev --skip-lock
 
 ci:
 	pipenv run yapf -irp tickets tests migrations
