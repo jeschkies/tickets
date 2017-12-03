@@ -29,6 +29,8 @@ Add test data with `make fixtures`.
 Migrate any Postgresql database with `DATABASE_URL=postgresql://user:pw@url make
 migrate`. The environment variable is also required to run the app in production.
 
+Cf. `make help` for more commands.
+
 ## Deployment
 
 Migrate the database with
