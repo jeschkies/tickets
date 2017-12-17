@@ -6,7 +6,7 @@ Commands:
   test      Run linters, test db migrations and tests.
   migrate   Run db migrations for production.
   deploy    Deploy to heroku.
-  server    Run app in dev environment.
+  serve     Run app in dev environment.
   fixtures  Populate dev db with fixtures data.
   clean     Remove test db.
 endef
